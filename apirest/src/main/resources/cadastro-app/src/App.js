@@ -9,6 +9,7 @@ import {Menubar} from 'primereact/menubar';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 import {Button} from 'primereact/button';
+import {Growl} from 'primereact/growl';
 
 
 import 'primereact/resources/themes/nova-light/theme.css';
@@ -26,13 +27,18 @@ export default class App extends Component{
     		id:null,
     		nome:null,
     		senha:null
-    		}
+    		},
+		selectedClient : {
+
+    }
     };
     this.actionTemplate1 = this.actionTemplate1.bind(this);
     this.actionTemplate2 = this.actionTemplate2.bind(this);
     this.showSaveDialog = this.showSaveDialog.bind(this);
+    this.showEditDialog = this.showEditDialog.bind(this);
     this.cadastroservice = new CadastroService();
     this.save = this.save.bind(this);
+    this.delete = this.delete.bind(this);
 	this.footer = (
 	      <div>
 	        <Button label="Save" icon="pi pi-check" onClick={this.save} />
@@ -42,14 +48,14 @@ export default class App extends Component{
   
  actionTemplate1(rowData, column) {
      return <div>
-     	<Button label="Edit" className="p-button-warning" />
+     	<Button label="Edit" className="p-button-warning" onClick={this.showEditDialog} />
      	
      </div>;
 }
 
  actionTemplate2(rowData, column) {
      return <div>
-      	<Button label="Delete" className="p-button-danger" />
+      	<Button label="Delete" className="p-button-danger" onClick={this.delete} />
      </div>;
 }
  
@@ -60,8 +66,26 @@ export default class App extends Component{
   
   save() {
 	  this.cadastroservice.save(this.state.client).then(data => {
-		  console.log(data);
+		  this.setState({
+		  visible: false,
+		  client:{
+	    		id:null,
+	    		nome:null,
+	    		senha:null
+		  }
+		  });
+		  this.growl.show({severity: 'success', summary: 'Success!', detail: 'Order Submitted!'});
+		  this.cadastroservice.getAll().then(data => this.setState({cadastro: data}))
 	  })
+  }
+  
+  delete() {
+	    if(window.confirm("Are you sure?")) {
+	      this.cadastroservice.delete(this.state.selectedClient.client).then(data => {
+	      this.growl.show({severity: 'success', summary: 'Attention!', detail: 'Deleted Order!'});
+	      this.cadastroservice.getAll().then(data => this.setState({cadastro: data}));
+	      });
+	    }
   }
   
   render(){
@@ -69,7 +93,7 @@ export default class App extends Component{
 	    <div style={{width:'80%', margin:'0 auto', marginTop:'10px'}}>
 	    <br/>
 			<Panel header="CRUD APIREST - Cadastro" >
-				 <DataTable value={this.state.cadastro}>
+				 <DataTable value={this.state.cadastro} selectionMode="single" selection={this.state.selectedClient} onSelectionChange={e => this.setState({selectedClient: e.value})}>
 				 	<Column field="id" header="ID"></Column>
 				 	<Column field="nome" header="Nome"></Column>
 				 	<Column field="senha" header="Senha"></Column>
@@ -106,7 +130,8 @@ export default class App extends Component{
 				} />
 				<label htmlFor="senha">Senha</label>
 			</span>
-				</Dialog>	
+				</Dialog>
+				<Growl ref={(el) => this.growl = el} />
 		</div>
   );
 }
@@ -118,7 +143,17 @@ export default class App extends Component{
 	        nome: null,
 	        senha: null
 	      }
-	    });
-	   
+	    });	   
   }
+  
+  showEditDialog() {
+	    this.setState({
+	      visible : true,
+	      client : {
+	      id: this.state.selectedClient.id,	  
+	      nome: this.state.selectedClient.nome,
+	      senha: this.state.selectedClient.senha
+	      }
+	    })
+	  }
 }
