@@ -9,6 +9,12 @@ export class CadastroService{
 
     getAll(){
         return axios.get(this.baseUrl + "/cadastro").then(res => res.data);
+        
+    }
+    
+   save(client) {
+    	return axios.post(this.baseUrl + "/cadastro", client).then(res => res.data);
+        
     }
 }
     

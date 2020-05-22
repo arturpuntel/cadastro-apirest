@@ -41,7 +41,7 @@ public class CadastroResource {
 	
 	/* Salva um usuario */
 	@PostMapping("/cadastro")
-	public Cadastro salvaUsuario(@RequestBody @Valid Cadastro cadastro) {
+	public Cadastro salvaUsuario(@RequestBody Cadastro cadastro) {
 		return cadastroRepository.save(cadastro);
 	}
 	

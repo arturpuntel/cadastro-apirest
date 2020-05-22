@@ -20,20 +20,48 @@ import 'primeicons/primeicons.css';
 export default class App extends Component{
   constructor(){
     super();
-    this.state = {};
+    this.state = {
+    	visible:false,
+    	client:{
+    		id:null,
+    		nome:null,
+    		senha:null
+    		}
+    };
+    this.actionTemplate1 = this.actionTemplate1.bind(this);
+    this.actionTemplate2 = this.actionTemplate2.bind(this);
+    this.showSaveDialog = this.showSaveDialog.bind(this);
     this.cadastroservice = new CadastroService();
+    this.save = this.save.bind(this);
+	this.footer = (
+	      <div>
+	        <Button label="Save" icon="pi pi-check" onClick={this.save} />
+	      </div>			
+    );
   }
+  
+ actionTemplate1(rowData, column) {
+     return <div>
+     	<Button label="Edit" className="p-button-warning" />
+     	
+     </div>;
+}
+
+ actionTemplate2(rowData, column) {
+     return <div>
+      	<Button label="Delete" className="p-button-danger" />
+     </div>;
+}
+ 
   
   componentDidMount(){
 	    this.cadastroservice.getAll().then(data => this.setState({cadastro: data}))
-	    this.setState({
-	    	visible:false,
-	    	client:{
-	    		id:null,
-	    		nome:null,
-	    		senha:null
-	    	}
-	    });
+  }
+  
+  save() {
+	  this.cadastroservice.save(this.state.client).then(data => {
+		  console.log(data);
+	  })
   }
   
   render(){
@@ -45,13 +73,52 @@ export default class App extends Component{
 				 	<Column field="id" header="ID"></Column>
 				 	<Column field="nome" header="Nome"></Column>
 				 	<Column field="senha" header="Senha"></Column>
-				 </DataTable>
+				 	<Column header="Editar" body={this.actionTemplate1} style={{textAlign:'center', width: '8em'}}/>
+				 	<Column header="Deletar" body={this.actionTemplate2} style={{textAlign:'center', width: '8em'}}/>		
+				 </DataTable>	
+		<br/>
+			<Button label="Save" className="p-button-success" onClick={this.showSaveDialog} />
 			</Panel>
-			<br/>
-			<Button label="Save" className="p-button-success" />
-			<Button label="Edit" className="p-button-warning" />
-			<Button label="Delete" className="p-button-danger" />
+				<Dialog header="Criar Cliente" visible={this.state.visible} footer={this.footer} style={{width: '400px'}} footer={this.footer} modal={true} onHide={() => this.setState({visible: false})}>
+				<span className="p-float-label">
+					<InputText value={this.state.client.nome} style={{width:'100%'}} id="nome" onChange={(e) => {
+						let val = e.target.value;
+						this.setState(prevState => {
+						console.log(val);
+						let client = Object.assign({}, prevState.client);
+						client.nome = val
+						
+						return {client};
+					})}
+					} />
+					<label htmlFor="nome">Nome</label>
+				</span>
+				<span className="p-float-label">
+				<InputText value={this.state.client.senha} style={{width:'100%'}} id="senha" onChange={(e) => {
+					let val = e.target.value;
+					this.setState(prevState => {
+					console.log(val);
+					let client = Object.assign({}, prevState.client);
+					client.senha = val
+					
+					return {client};
+				})}
+				} />
+				<label htmlFor="senha">Senha</label>
+			</span>
+				</Dialog>	
 		</div>
   );
 }
+  showSaveDialog(){
+	    this.setState({
+	      visible : true,
+	      client : {
+	        id: null,
+	        nome: null,
+	        senha: null
+	      }
+	    });
+	   
+  }
 }
