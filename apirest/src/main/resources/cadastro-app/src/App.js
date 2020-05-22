@@ -81,7 +81,7 @@ export default class App extends Component{
   
   delete() {
 	    if(window.confirm("Are you sure?")) {
-	      this.cadastroservice.delete(this.state.selectedClient.id).then(data => {
+	      this.cadastroservice.delete(this.state.selectedClient.client).then(data => {
 	      this.growl.show({severity: 'success', summary: 'Attention!', detail: 'Deleted Order!'});
 	      this.cadastroservice.getAll().then(data => this.setState({cadastro: data}));
 	      });

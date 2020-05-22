@@ -46,10 +46,9 @@ public class CadastroResource {
 	}
 	
 	/* Deleta um usuario */
-	@DeleteMapping("/cadastro/{id}")
-	public void deletaUsuario(@PathVariable(value="id") long id) {
-		cadastroRepository.deleteById(id);
-	
+	@DeleteMapping("/cadastro")
+	public void deletaUsuario(@RequestBody @Valid Cadastro cadastro) {
+		cadastroRepository.delete(cadastro);
 	}
 	
 	/* Atualzia um usuario */
