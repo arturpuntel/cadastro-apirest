@@ -6,5 +6,5 @@ import com.cadastro.apirest.models.Cadastro;
 
 public interface CadastroRepository extends JpaRepository<Cadastro, Long>{
 	Cadastro findById(long id);
-
+	
 }
