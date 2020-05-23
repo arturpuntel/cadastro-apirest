@@ -29,7 +29,6 @@ export default class App extends Component{
     		senha:null
     		},
 		selectedClient : {
-
     }
     };
     this.actionTemplate1 = this.actionTemplate1.bind(this);
@@ -92,18 +91,18 @@ export default class App extends Component{
 	  return (
 	    <div style={{width:'80%', margin:'0 auto', marginTop:'10px'}}>
 	    <br/>
-			<Panel header="CRUD APIREST - Cadastro" >
-				 <DataTable value={this.state.cadastro} selectionMode="single" selection={this.state.selectedClient} onSelectionChange={e => this.setState({selectedClient: e.value})}>
+			<Panel header="CRUD APIREST - Cadastro" style={{textAlign:'center'}}>
+				 <DataTable value={this.state.cadastro} paginator={true} rows="5" selectionMode="single" selection={this.state.selectedClient} onSelectionChange={e => this.setState({selectedClient: e.value})}>
 				 	<Column field="id" header="ID"></Column>
-				 	<Column field="nome" header="Nome"></Column>
-				 	<Column field="senha" header="Senha"></Column>
-				 	<Column header="Editar" body={this.actionTemplate1} style={{textAlign:'center', width: '8em'}}/>
-				 	<Column header="Deletar" body={this.actionTemplate2} style={{textAlign:'center', width: '8em'}}/>		
+				 	<Column field="nome" header="Name"></Column>
+				 	<Column field="senha" header="Password"></Column>
+				 	<Column header="Edit" body={this.actionTemplate1} style={{textAlign:'center', width: '8em'}}/>
+				 	<Column header="Delete" body={this.actionTemplate2} style={{textAlign:'center', width: '8em'}}/>		
 				 </DataTable>	
 		<br/>
-			<Button label="Save" className="p-button-success" onClick={this.showSaveDialog} />
+			<Button label="Add Client" className="p-button-success" onClick={this.showSaveDialog} />
 			</Panel>
-				<Dialog header="Criar Cliente" visible={this.state.visible} footer={this.footer} style={{width: '400px'}} footer={this.footer} modal={true} onHide={() => this.setState({visible: false})}>
+				<Dialog header="Client Resources" visible={this.state.visible} footer={this.footer} style={{width: '400px', textAlign:'center'}} footer={this.footer} modal={true} onHide={() => this.setState({visible: false})}>
 				<span className="p-float-label">
 					<InputText value={this.state.client.nome} style={{width:'100%'}} id="nome" onChange={(e) => {
 						let val = e.target.value;
@@ -115,8 +114,9 @@ export default class App extends Component{
 						return {client};
 					})}
 					} />
-					<label htmlFor="nome">Nome</label>
+					<label htmlFor="nome">Name</label>
 				</span>
+				<br/>
 				<span className="p-float-label">
 				<InputText value={this.state.client.senha} style={{width:'100%'}} id="senha" onChange={(e) => {
 					let val = e.target.value;
@@ -128,7 +128,7 @@ export default class App extends Component{
 					return {client};
 				})}
 				} />
-				<label htmlFor="senha">Senha</label>
+				<label htmlFor="senha">Password</label>
 			</span>
 				</Dialog>
 				<Growl ref={(el) => this.growl = el} />
